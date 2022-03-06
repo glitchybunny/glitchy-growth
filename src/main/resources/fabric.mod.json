@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "glitchygrowth",
+  "version": "${version}",
+
+  "name": "Glitchy Growth",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "SewerBunny"
+  ],
+  "contact": {
+    "homepage": "https://rtay.io/",
+    "sources": "https://github.com/darkrilin/glitchy-growth"
+  },
+
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.sewerbunny.glitchygrowth.GlitchyGrowth"
+    ],
+    "client": [
+      "net.sewerbunny.glitchygrowth.GlitchyGrowthClient"
+    ]
+  },
+  "mixins": [
+    "glitchygrowth.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+  }
+}
