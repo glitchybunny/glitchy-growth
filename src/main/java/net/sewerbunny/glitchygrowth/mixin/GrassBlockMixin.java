@@ -2,6 +2,7 @@ package net.sewerbunny.glitchygrowth.mixin;
 
 import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -23,6 +24,34 @@ import java.util.Random;
 
 @Mixin(GrassBlock.class)
 public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
+    // Todo: Make configurable with ModMenu
+    int GRASS_SPOT_CHANCE = 20000;
+    int GRASS_SPREAD_CHANCE = 24;
+    int FEATURE_SPOT_CHANCE = 180000;
+    int FEATURE_SPREAD_CHANCE = 56;
+
+    // How these values work (on a superflat world)
+    // chunk = 16 * 16 = 256 surface blocks
+    // average tick time for a block = 68.27 seconds (1365.33 ticks)
+    // average tick time for 256 surface blocks = 68.27/256 = 0.267 seconds (5.333 ticks)
+    //
+    // SPOT_CHANCE
+    // will grow above a grass_block with a 1 in X chance
+    // X * 0.267 = average time for growth in a superflat chunk
+    // For example, if X = 20000 then
+    // 20000 * 0.267 = 5340 seconds = 89 minutes
+    // something will grow every ~1.5 hours in a chunk
+    //
+    // SPREAD_CHANCE
+    // if there's a plant above, it can spread to other grass blocks in a 5x5x5 area (2 blocks taxicab)
+    // Y * 68.27 = average time for a plant to spread
+    // For example, if Y = 24, then
+    // 24 * 68.27 = 1638 seconds = 27.3 minutes
+    // the plant will try spreading to adjacent tiles
+    // however, it can spread up to 4 times, and each new plant can also then get random ticks and spread
+    // leading to a (limited) geometric growth
+    // essentially, the more plants there are, the faster they can spread
+
     protected GrassBlockMixin(Settings settings) {
         super(settings);
     }
@@ -61,27 +90,41 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                     }
                 }
 
-                // Grow tall grass above
+                // Mod stuff
                 if (isFertilizable(world, pos, state, true)) {
-                    if (random.nextInt(16384) == 0) {
-                        // Similar to the grow() command
-                        BlockPos blockPos = pos.up();
-                        RegistryEntry registryEntry;
-                        if (random.nextInt(128) == 0) {
-                            List<ConfiguredFeature<?, ?>> list = world.getBiome(blockPos).value().getGenerationSettings().getFlowerFeatures();
-                            registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
-                        } else {
-                            registryEntry = VegetationPlacedFeatures.GRASS_BONEMEAL;
-                        }
+                    // Growth code
+                    BlockPos blockPos = pos.up();
+                    RegistryEntry registryEntry;
+
+                    // Randomly grow plants above grass blocks
+                    if (random.nextInt(GRASS_SPOT_CHANCE) == 0) {
+                        // Grow grass
+                        registryEntry = VegetationPlacedFeatures.GRASS_BONEMEAL;
+                        ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
+                    } else if (random.nextInt(FEATURE_SPOT_CHANCE) == 0) {
+                        // Grow a random feature (flowers, fern, etc)
+                        List<ConfiguredFeature<?, ?>> list = world.getBiome(blockPos).value().getGenerationSettings().getFlowerFeatures();
+                        registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
                         ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
                     }
+
                 } else if (world.getBlockState(pos.up()).isIn(ModTags.Blocks.GRASS_PLANTS)) {
-                    if (random.nextInt(128) == 0) {
-                        // Try to grow grass nearby
+                    // Grass spreading code
+                    if (random.nextInt(GRASS_SPREAD_CHANCE) == 0) {
                         for (int i = 0; i < 4; ++i) {
                             BlockPos blockPos = pos.add(random.nextInt(5) - 2, random.nextInt(5) - 3, random.nextInt(5) - 2);
                             if (world.getBlockState(blockPos).isOf(Blocks.GRASS_BLOCK) && isFertilizable(world, blockPos, blockState, true)) {
                                 world.setBlockState(blockPos.up(), Blocks.GRASS.getDefaultState());
+                            }
+                        }
+                    }
+                } else if (world.getBlockState(pos.up()).isIn(BlockTags.SMALL_FLOWERS)) {
+                    // Feature spreading code
+                    if (random.nextInt(FEATURE_SPREAD_CHANCE) == 0) {
+                        for (int i = 0; i < 2; ++i) {
+                            BlockPos blockPos = pos.add(random.nextInt(7) - 3, random.nextInt(3) - 1, random.nextInt(7) - 3);
+                            if (world.getBlockState(blockPos).isOf(Blocks.GRASS_BLOCK) && isFertilizable(world, blockPos, blockState, true)) {
+                                world.setBlockState(blockPos.up(), world.getBlockState(pos.up()));
                             }
                         }
                     }
