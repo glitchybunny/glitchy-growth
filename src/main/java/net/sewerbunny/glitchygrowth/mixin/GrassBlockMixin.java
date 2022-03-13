@@ -25,10 +25,12 @@ import java.util.Random;
 @Mixin(GrassBlock.class)
 public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
     // Todo: Make configurable with ModMenu
-    int GRASS_SPOT_CHANCE = 20000;
+    int GRASS_CHANCE = 20000;
+    int FLOWER_CHANCE = 180000;
+
+    // TODO: move spreading code to FernBlockMixin and FlowerBlockMixin, etc
     int GRASS_SPREAD_CHANCE = 24;
-    int FEATURE_SPOT_CHANCE = 180000;
-    int FEATURE_SPREAD_CHANCE = 56;
+    int FLOWER_SPREAD_CHANCE = 56;
 
     // How these values work (on a superflat world)
     // chunk = 16 * 16 = 256 surface blocks
@@ -97,19 +99,19 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                     RegistryEntry registryEntry;
 
                     // Randomly grow plants above grass blocks
-                    if (random.nextInt(GRASS_SPOT_CHANCE) == 0) {
+                    if (random.nextInt(GRASS_CHANCE) == 0) {
                         // Grow grass
                         registryEntry = VegetationPlacedFeatures.GRASS_BONEMEAL;
                         ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
-                    } else if (random.nextInt(FEATURE_SPOT_CHANCE) == 0) {
+                    } else if (random.nextInt(FLOWER_CHANCE) == 0) {
                         // Grow a random feature (flowers, fern, etc)
                         List<ConfiguredFeature<?, ?>> list = world.getBiome(blockPos).value().getGenerationSettings().getFlowerFeatures();
                         registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
                         ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
                     }
 
-                } else if (world.getBlockState(pos.up()).isIn(ModTags.Blocks.GRASS_PLANTS)) {
-                    // Grass spreading code
+                } else if (world.getBlockState(pos.up()).isIn(ModTags.Blocks.GRASSES)) {
+                    // Fern (grass) spreading code
                     if (random.nextInt(GRASS_SPREAD_CHANCE) == 0) {
                         for (int i = 0; i < 4; ++i) {
                             BlockPos blockPos = pos.add(random.nextInt(5) - 2, random.nextInt(5) - 3, random.nextInt(5) - 2);
@@ -120,7 +122,7 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                     }
                 } else if (world.getBlockState(pos.up()).isIn(BlockTags.SMALL_FLOWERS)) {
                     // Feature spreading code
-                    if (random.nextInt(FEATURE_SPREAD_CHANCE) == 0) {
+                    if (random.nextInt(FLOWER_SPREAD_CHANCE) == 0) {
                         for (int i = 0; i < 2; ++i) {
                             BlockPos blockPos = pos.add(random.nextInt(7) - 3, random.nextInt(3) - 1, random.nextInt(7) - 3);
                             if (world.getBlockState(blockPos).isOf(Blocks.GRASS_BLOCK) && isFertilizable(world, blockPos, blockState, true)) {
