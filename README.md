@@ -1,3 +1,3 @@
 # glitchy-growth
 
-uwu minecraft mod
+This mod is very early in alpha development, and I'm learning as I go :)
