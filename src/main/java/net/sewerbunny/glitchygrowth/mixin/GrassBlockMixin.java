@@ -3,7 +3,6 @@ package net.sewerbunny.glitchygrowth.mixin;
 import net.minecraft.block.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -16,46 +15,22 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
 import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Random;
 
 @Mixin(GrassBlock.class)
 public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
+    // CHANCE
+    // average tick time per block = 68.27 seconds (1365.33 ticks)
+    // average tick time for 16*16 chunk surface = 68.27/(16*16) = 0.267 seconds (5.333 ticks)
+    // X * 0.267 = average time for growth in a chunk. if X = 40000 then
+    // 40000 * 0.267 = 10680 seconds = 178 minutes (will grow on average every 3 hours)
     // Todo: Make configurable with ModMenu
-    int GRASS_CHANCE = 20000;
-    int FLOWER_CHANCE = 180000;
-
-    // TODO: move spreading code to FernBlockMixin and FlowerBlockMixin, etc
-    int FLOWER_SPREAD_CHANCE = 56;
-
-    // How these values work (on a superflat world)
-    // chunk = 16 * 16 = 256 surface blocks
-    // average tick time for a block = 68.27 seconds (1365.33 ticks)
-    // average tick time for 256 surface blocks = 68.27/256 = 0.267 seconds (5.333 ticks)
-    //
-    // SPOT_CHANCE
-    // will grow above a grass_block with a 1 in X chance
-    // X * 0.267 = average time for growth in a superflat chunk
-    // For example, if X = 20000 then
-    // 20000 * 0.267 = 5340 seconds = 89 minutes
-    // something will grow every ~1.5 hours in a chunk
-    //
-    // SPREAD_CHANCE
-    // if there's a plant above, it can spread to other grass blocks in a 5x5x5 area (2 blocks taxicab)
-    // Y * 68.27 = average time for a plant to spread
-    // For example, if Y = 24, then
-    // 24 * 68.27 = 1638 seconds = 27.3 minutes
-    // the plant will try spreading to adjacent tiles
-    // however, it can spread up to 4 times, and each new plant can also then get random ticks and spread
-    // leading to a (limited) geometric growth
-    // essentially, the more plants there are, the faster they can spread
+    final static int GRASS_CHANCE = 40000; // 3 hours
+    final static int FLOWER_CHANCE = 180000; // 13.35 hours
 
     protected GrassBlockMixin(Settings settings) {
         super(settings);
@@ -79,7 +54,6 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
         return canSurvive(state, world, pos) && !world.getFluidState(blockPos).isIn(FluidTags.WATER);
     }
 
-    /*
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!canSurvive(state, world, pos)) {
@@ -99,26 +73,24 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                 if (isFertilizable(world, pos, state, true)) {
                     // Growth code
                     BlockPos blockPos = pos.up();
-                    RegistryEntry registryEntry;
+                    RegistryEntry<PlacedFeature> registryEntry;
 
                     // Randomly grow plants above grass blocks
                     if (random.nextInt(GRASS_CHANCE) == 0) {
                         // Grow grass
                         registryEntry = VegetationPlacedFeatures.GRASS_BONEMEAL;
-                        ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
+                        (registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
                     } else if (random.nextInt(FLOWER_CHANCE) == 0) {
                         // Grow a random feature (flowers, fern, etc)
                         List<ConfiguredFeature<?, ?>> list = world.getBiome(blockPos).value().getGenerationSettings().getFlowerFeatures();
                         registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
-                        ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
+                        (registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
                     }
 
                 }
             }
         }
     }
-
-     */
 
     @Shadow
     public boolean isFertilizable(BlockView world, BlockPos pos, BlockState state, boolean isClient) {
