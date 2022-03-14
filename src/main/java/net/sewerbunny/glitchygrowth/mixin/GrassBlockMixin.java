@@ -1,6 +1,7 @@
 package net.sewerbunny.glitchygrowth.mixin;
 
 import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
@@ -15,9 +16,12 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
 import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
-import net.sewerbunny.glitchygrowth.util.ModTags;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Random;
@@ -29,7 +33,6 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
     int FLOWER_CHANCE = 180000;
 
     // TODO: move spreading code to FernBlockMixin and FlowerBlockMixin, etc
-    int GRASS_SPREAD_CHANCE = 24;
     int FLOWER_SPREAD_CHANCE = 56;
 
     // How these values work (on a superflat world)
@@ -76,13 +79,13 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
         return canSurvive(state, world, pos) && !world.getFluidState(blockPos).isIn(FluidTags.WATER);
     }
 
+    /*
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!canSurvive(state, world, pos)) {
             world.setBlockState(pos, Blocks.DIRT.getDefaultState());
         } else {
             if (world.getLightLevel(pos.up()) >= 9) {
-                // Vanilla grass spreading code
                 BlockState blockState = this.getDefaultState();
 
                 for (int i = 0; i < 4; ++i) {
@@ -92,7 +95,7 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                     }
                 }
 
-                // Mod stuff
+                // Attempt to grow grass/flowers on top of self
                 if (isFertilizable(world, pos, state, true)) {
                     // Growth code
                     BlockPos blockPos = pos.up();
@@ -110,30 +113,12 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
                         ((PlacedFeature) registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
                     }
 
-                } else if (world.getBlockState(pos.up()).isIn(ModTags.Blocks.GRASSES)) {
-                    // Fern (grass) spreading code
-                    if (random.nextInt(GRASS_SPREAD_CHANCE) == 0) {
-                        for (int i = 0; i < 4; ++i) {
-                            BlockPos blockPos = pos.add(random.nextInt(5) - 2, random.nextInt(5) - 3, random.nextInt(5) - 2);
-                            if (world.getBlockState(blockPos).isOf(Blocks.GRASS_BLOCK) && isFertilizable(world, blockPos, blockState, true)) {
-                                world.setBlockState(blockPos.up(), Blocks.GRASS.getDefaultState());
-                            }
-                        }
-                    }
-                } else if (world.getBlockState(pos.up()).isIn(BlockTags.SMALL_FLOWERS)) {
-                    // Feature spreading code
-                    if (random.nextInt(FLOWER_SPREAD_CHANCE) == 0) {
-                        for (int i = 0; i < 2; ++i) {
-                            BlockPos blockPos = pos.add(random.nextInt(7) - 3, random.nextInt(3) - 1, random.nextInt(7) - 3);
-                            if (world.getBlockState(blockPos).isOf(Blocks.GRASS_BLOCK) && isFertilizable(world, blockPos, blockState, true)) {
-                                world.setBlockState(blockPos.up(), world.getBlockState(pos.up()));
-                            }
-                        }
-                    }
                 }
             }
         }
     }
+
+     */
 
     @Shadow
     public boolean isFertilizable(BlockView world, BlockPos pos, BlockState state, boolean isClient) {
