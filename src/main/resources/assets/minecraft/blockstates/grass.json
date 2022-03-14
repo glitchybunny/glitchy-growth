@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "glitchygrowth:block/grass_stage0"
+    },
+    "age=1": {
+      "model": "glitchygrowth:block/grass_stage0"
+    },
+    "age=2": {
+      "model": "glitchygrowth:block/grass_stage1"
+    },
+    "age=3": {
+      "model": "glitchygrowth:block/grass_stage1"
+    },
+    "age=4": {
+      "model": "glitchygrowth:block/grass_stage2"
+    },
+    "age=5": {
+      "model": "glitchygrowth:block/grass_stage2"
+    },
+    "age=6": {
+      "model": "glitchygrowth:block/grass_stage2"
+    },
+    "age=7": {
+      "model": "glitchygrowth:block/grass_stage3"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 package net.sewerbunny.glitchygrowth.mixin;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FernBlock;
@@ -11,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public class AbstractBlockStateMixin {
-
     @Inject(method = "hasRandomTicks()Z", at = @At("RETURN"), cancellable = true)
     private void hasRandomTicks(CallbackInfoReturnable<Boolean> cir) {
         Class<? extends Block> blockClass = this.getBlock().getClass();

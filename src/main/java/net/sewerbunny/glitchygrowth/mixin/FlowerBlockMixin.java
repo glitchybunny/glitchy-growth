@@ -13,7 +13,7 @@ import java.util.Random;
 @Mixin(FlowerBlock.class)
 public class FlowerBlockMixin extends PlantBlock {
     // Todo: Make configurable with ModMenu
-    final static int FLOWER_SPREAD_CHANCE = 40; // 43.1 minutes
+    private static final int FLOWER_SPREAD_CHANCE = 40; // 43.1 minutes
 
     protected FlowerBlockMixin(Settings settings) {
         super(settings);

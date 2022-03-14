@@ -29,8 +29,8 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
     // X * 0.267 = average time for growth in a chunk. if X = 40000 then
     // 40000 * 0.267 = 10680 seconds = 178 minutes (will grow on average every 3 hours)
     // Todo: Make configurable with ModMenu
-    final static int GRASS_CHANCE = 40000; // 3 hours
-    final static int FLOWER_CHANCE = 180000; // 13.35 hours
+    private static final int GRASS_CHANCE = 40000; // 3 hours
+    private static final int FLOWER_CHANCE = 180000; // 13.35 hours
 
     protected GrassBlockMixin(Settings settings) {
         super(settings);
