@@ -4,10 +4,11 @@
   "package": "net.sewerbunny.glitchygrowth.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AbstractBlockStateMixin",
-    "FernBlockMixin",
-    "FlowerBlockMixin",
-    "GrassBlockMixin"
+    "block.AbstractBlockStateMixin",
+    "block.FernBlockMixin",
+    "block.FlowerBlockMixin",
+    "block.GrassBlockMixin",
+    "world.gen.feature.SimpleBlockFeatureMixin"
   ],
   "client": [
   ],

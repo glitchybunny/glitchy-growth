@@ -1,4 +1,4 @@
-package net.sewerbunny.glitchygrowth.mixin;
+package net.sewerbunny.glitchygrowth.mixin.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.BlockState;
