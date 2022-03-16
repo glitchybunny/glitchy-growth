@@ -11,6 +11,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
 
@@ -32,9 +35,13 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     private static final float GRASS_SPREAD_CHANCE = 120.0f;
     private static final float FERN_SPREAD_CHANCE = 50.0f;
 
-    protected FernBlockMixin(Settings settings) {
+    public FernBlockMixin(Settings settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(this.getAgeProperty(), MAX_AGE));
+    }
+
+    @Inject(method="<init>", at=@At("TAIL"))
+    public void Init(CallbackInfo ci) {
+        setDefaultState(getStateManager().getDefaultState().with(AGE, MAX_AGE));
     }
 
     @Override
