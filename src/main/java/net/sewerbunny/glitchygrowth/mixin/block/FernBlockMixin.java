@@ -6,8 +6,10 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,14 +34,14 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D)};
 
     // Todo: Make configurable with ModMenu
-    private static final float GRASS_SPREAD_CHANCE = 120.0f;
+    private static final float GRASS_SPREAD_CHANCE = 110.0f;
     private static final float FERN_SPREAD_CHANCE = 50.0f;
 
     public FernBlockMixin(Settings settings) {
         super(settings);
     }
 
-    @Inject(method="<init>", at=@At("TAIL"))
+    @Inject(method = "<init>", at = @At("TAIL"))
     public void Init(CallbackInfo ci) {
         setDefaultState(getStateManager().getDefaultState().with(AGE, MAX_AGE));
     }
@@ -50,11 +52,16 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
         boolean isFern = state.isOf(Blocks.FERN);
         int age = this.getAge(state);
 
-        if (world.getLightLevel(pos) >= 9) {
+        if (MathHelper.clamp(world.getLightLevel(LightType.SKY, pos) - world.getAmbientDarkness(), 0, 15) >= 9) {
             // Growth code
             if (!this.isMature(state)) {
-                if (random.nextInt(5) == 0) {
+                if (random.nextInt(10) == 0) {
                     world.setBlockState(pos, this.withAge(age + 1), 2);
+                }
+            } else if (random.nextInt((int) GRASS_SPREAD_CHANCE) == 0 && !isFern) {
+                // Chance to propagate grass down
+                if (world.getBlockState(pos.down()).isOf(Blocks.DIRT)) {
+                    world.setBlockState(pos.down(), Blocks.GRASS_BLOCK.getDefaultState());
                 }
             }
 
@@ -75,7 +82,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
                 for (int j = 0; j < 3; ++j) {
                     BlockPos blockPos2 = pos.add(random.nextInt(5) - 2, random.nextInt(2) - random.nextInt(2), random.nextInt(5) - 2);
                     if (world.isAir(blockPos2) && state.canPlaceAt(world, blockPos2)) {
-                        world.setBlockState(blockPos2, isFern ? Blocks.FERN.getDefaultState() : Blocks.GRASS.getDefaultState());
+                        world.setBlockState(blockPos2, isFern ? Blocks.FERN.getDefaultState().with(AGE, 0) : Blocks.GRASS.getDefaultState().with(AGE, 0));
                     }
                 }
             }

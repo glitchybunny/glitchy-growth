@@ -13,8 +13,6 @@ import net.minecraft.world.gen.feature.SimpleBlockFeatureConfig;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Random;
-
 @Mixin(SimpleBlockFeature.class)
 public class SimpleBlockFeatureMixin extends Feature<SimpleBlockFeatureConfig> {
     public SimpleBlockFeatureMixin(Codec<SimpleBlockFeatureConfig> configCodec) {
@@ -23,7 +21,7 @@ public class SimpleBlockFeatureMixin extends Feature<SimpleBlockFeatureConfig> {
 
     @Override
     public boolean generate(FeatureContext<SimpleBlockFeatureConfig> context) {
-        SimpleBlockFeatureConfig simpleBlockFeatureConfig = (SimpleBlockFeatureConfig) context.getConfig();
+        SimpleBlockFeatureConfig simpleBlockFeatureConfig = context.getConfig();
         StructureWorldAccess structureWorldAccess = context.getWorld();
         BlockPos blockPos = context.getOrigin();
         BlockState blockState = simpleBlockFeatureConfig.toPlace().getBlockState(context.getRandom(), blockPos);

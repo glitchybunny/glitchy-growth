@@ -1,8 +1,8 @@
 package net.sewerbunny.glitchygrowth.mixin.block;
 
 import net.minecraft.block.*;
-import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.property.Properties;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -14,7 +14,6 @@ import net.minecraft.world.chunk.light.ChunkLightProvider;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
-import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -58,38 +57,44 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!canSurvive(state, world, pos)) {
             world.setBlockState(pos, Blocks.DIRT.getDefaultState());
-        } else {
-            if (world.getLightLevel(pos.up()) >= 9) {
+        } else if (world.getLightLevel(pos.up()) >= 9) {
+            // Vanilla grass spreading behaviour (but 4x slower)
+            if (random.nextInt(4) == 0) {
                 BlockState blockState = this.getDefaultState();
-
                 for (int i = 0; i < 4; ++i) {
                     BlockPos blockPos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
                     if (world.getBlockState(blockPos).isOf(Blocks.DIRT) && canSpread(blockState, world, blockPos)) {
                         world.setBlockState(blockPos, blockState.with(SNOWY, world.getBlockState(blockPos.up()).isOf(Blocks.SNOW)));
+                        // Also has a chance to seed grass above when spreading
+                        if (random.nextInt(32) == 0) {
+                            this.growGrass(world, pos);
+                        }
                     }
                 }
+            }
 
-                // Attempt to grow grass/flowers on top of self
-                if (isFertilizable(world, pos, state, true)) {
-                    // Growth code
-                    BlockPos blockPos = pos.up();
-                    RegistryEntry<PlacedFeature> registryEntry;
-
-                    // Randomly grow plants above grass blocks
-                    if (random.nextInt(GRASS_CHANCE) == 0) {
-                        // Grow grass
-                        registryEntry = VegetationPlacedFeatures.GRASS_BONEMEAL;
-                        (registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
-                    } else if (random.nextInt(FLOWER_CHANCE) == 0) {
-                        // Grow a random feature (flowers, fern, etc)
-                        List<ConfiguredFeature<?, ?>> list = world.getBiome(blockPos).value().getGenerationSettings().getFlowerFeatures();
-                        registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
-                        (registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos);
-                    }
-
+            // Randomly grow plants above grass blocks
+            if (isFertilizable(world, pos, state, world.isClient())) {
+                if (random.nextInt(GRASS_CHANCE) == 0) {
+                    this.growGrass(world, pos);
+                } else if (random.nextInt(FLOWER_CHANCE) == 0) {
+                    this.growFeature(world, random, pos);
                 }
             }
         }
+    }
+
+    public void growGrass(ServerWorld world, BlockPos pos) {
+        if (world.getBlockState(pos.up()).isOf(Blocks.AIR)) {
+            world.setBlockState(pos.up(), Blocks.GRASS.getDefaultState().with(Properties.AGE_7, 0));
+        }
+    }
+
+    public void growFeature(ServerWorld world, Random random, BlockPos pos) {
+        RegistryEntry<PlacedFeature> registryEntry;
+        List<ConfiguredFeature<?, ?>> list = world.getBiome(pos).value().getGenerationSettings().getFlowerFeatures();
+        registryEntry = ((RandomPatchFeatureConfig) list.get(0).config()).feature();
+        (registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, pos.up());
     }
 
     @Shadow
