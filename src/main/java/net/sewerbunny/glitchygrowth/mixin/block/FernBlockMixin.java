@@ -21,6 +21,9 @@ import java.util.Random;
 
 @Mixin(FernBlock.class)
 public class FernBlockMixin extends PlantBlock implements Fertilizable {
+    // Todo: Make spread chance configurable with ModMenu
+    private static final float GRASS_SPREAD_CHANCE = 110.0f;
+    private static final float FERN_SPREAD_CHANCE = 50.0f;
     private static final int MAX_AGE = 7;
     private static final IntProperty AGE = Properties.AGE_7;
     private static final VoxelShape[] AGE_TO_SHAPE = new VoxelShape[]{
@@ -33,10 +36,6 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D),
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D)};
 
-    // Todo: Make configurable with ModMenu
-    private static final float GRASS_SPREAD_CHANCE = 110.0f;
-    private static final float FERN_SPREAD_CHANCE = 50.0f;
-
     public FernBlockMixin(Settings settings) {
         super(settings);
     }
@@ -44,6 +43,10 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void Init(CallbackInfo ci) {
         setDefaultState(getStateManager().getDefaultState().with(AGE, MAX_AGE));
+    }
+
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(AGE);
     }
 
     @Override
@@ -127,9 +130,5 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
 
     @Shadow
     public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
-    }
-
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(AGE);
     }
 }
