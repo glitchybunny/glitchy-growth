@@ -3,7 +3,6 @@ package net.sewerbunny.glitchygrowth;
 import net.fabricmc.api.ModInitializer;
 import net.sewerbunny.glitchygrowth.block.ModBlocks;
 import net.sewerbunny.glitchygrowth.item.ModItems;
-import net.sewerbunny.glitchygrowth.util.ModRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +14,5 @@ public class GlitchyGrowth implements ModInitializer {
 	public void onInitialize() {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
-		ModRegistries.registerModStuffs();
 	}
 }

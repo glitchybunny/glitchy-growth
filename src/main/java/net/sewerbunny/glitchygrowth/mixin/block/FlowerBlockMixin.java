@@ -38,7 +38,7 @@ public class FlowerBlockMixin extends PlantBlock {
                 // Otherwise, spread to nearby blocks
                 for (int j = 0; j < 2; ++j) {
                     BlockPos blockPos2 = pos.add(random.nextInt(5) - 2, random.nextInt(2) - random.nextInt(2), random.nextInt(5) - 2);
-                    if (state.canPlaceAt(world, blockPos2) && (world.isAir(blockPos2) || world.getBlockState(blockPos2).isIn(ModTags.Blocks.GRASSES))) {
+                    if (state.canPlaceAt(world, blockPos2) && (world.isAir(blockPos2) || world.getBlockState(blockPos2).isIn(ModTags.Blocks.GRASS))) {
                         world.setBlockState(blockPos2, this.getDefaultState());
                     }
                 }

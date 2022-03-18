@@ -10,7 +10,9 @@ import net.sewerbunny.glitchygrowth.GlitchyGrowth;
 
 public class ModTags {
     public static class Blocks {
-        public static final TagKey<Block> GRASSES = createCommonTag("grasses");
+        public static final TagKey<Block> GRASS = createCommonTag("grass");
+        public static final TagKey<Block> DEAD_BLOCK = createCommonTag("dead_block");
+        public static final TagKey<Block> DEAD_PLANT_BLOCK = createCommonTag("dead_plant_block");
 
         private static TagKey<Block> createTag(String name) {
             return TagKey.of(Registry.BLOCK_KEY, new Identifier(GlitchyGrowth.MOD_ID, name));

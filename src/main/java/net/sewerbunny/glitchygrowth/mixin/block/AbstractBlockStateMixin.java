@@ -21,6 +21,7 @@ public class AbstractBlockStateMixin {
     }
 
     @Shadow
+    @SuppressWarnings("SameReturnValue")
     public Block getBlock() {
         return null;
     }

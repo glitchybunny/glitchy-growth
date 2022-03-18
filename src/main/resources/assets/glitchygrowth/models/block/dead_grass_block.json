@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "glitchygrowth:block/dead_grass_block_top",
+    "bottom": "minecraft:block/dirt",
+    "side": "glitchygrowth:block/dead_grass_block_side"
+  }
+}
