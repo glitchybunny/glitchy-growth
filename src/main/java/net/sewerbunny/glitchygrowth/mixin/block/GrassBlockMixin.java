@@ -3,17 +3,21 @@ package net.sewerbunny.glitchygrowth.mixin.block;
 import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.chunk.light.ChunkLightProvider;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
+import net.sewerbunny.glitchygrowth.block.ModBlocks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -42,6 +46,8 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
             return true;
         } else if (blockState.getFluidState().getLevel() == 8) {
             return false;
+        } else if (blockState.isIn(BlockTags.FIRE)) {
+            return false;
         } else {
             int i = ChunkLightProvider.getRealisticOpacity(world, state, pos, blockState, blockPos, Direction.UP, blockState.getOpacity(world, blockPos));
             return i < world.getMaxLightLevel();
@@ -55,18 +61,20 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        int skyLight = MathHelper.clamp(world.getLightLevel(LightType.SKY, pos.up()) - world.getAmbientDarkness(), 0, 15);
+
         if (!canSurvive(state, world, pos)) {
-            world.setBlockState(pos, Blocks.DIRT.getDefaultState());
-        } else if (world.getLightLevel(pos.up()) >= 9) {
-            // Vanilla grass spreading behaviour (but 4x slower)
-            if (random.nextInt(4) == 0) {
+            world.setBlockState(pos, ModBlocks.DEAD_GRASS_BLOCK.getDefaultState());
+        } else if (skyLight >= 9) {
+            // Vanilla grass spreading behaviour (but ~4x slower)
+            if (random.nextInt(19 - skyLight) == 0) {
                 BlockState blockState = this.getDefaultState();
                 for (int i = 0; i < 4; ++i) {
                     BlockPos blockPos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
                     if (world.getBlockState(blockPos).isOf(Blocks.DIRT) && canSpread(blockState, world, blockPos)) {
                         world.setBlockState(blockPos, blockState.with(SNOWY, world.getBlockState(blockPos.up()).isOf(Blocks.SNOW)));
                         // Also has a chance to seed grass above when spreading
-                        if (random.nextInt(32) == 0) {
+                        if (random.nextInt(48 - skyLight) == 0) {
                             this.growGrass(world, pos);
                         }
                     }

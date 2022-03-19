@@ -25,7 +25,6 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     // Todo: Make spread chance configurable with ModMenu
     private static final float GRASS_SPREAD_CHANCE = 110.0f;
     private static final float FERN_SPREAD_CHANCE = 50.0f;
-    private static final int MAX_AGE = 7;
     private static final IntProperty AGE = Properties.AGE_7;
     private static final VoxelShape[] AGE_TO_SHAPE = new VoxelShape[]{
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 5.0D, 14.0D),
@@ -43,7 +42,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void Init(CallbackInfo ci) {
-        setDefaultState(getStateManager().getDefaultState().with(AGE, MAX_AGE));
+        setDefaultState(getStateManager().getDefaultState().with(AGE, Properties.AGE_7_MAX));
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -55,14 +54,15 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         boolean isFern = state.isOf(Blocks.FERN);
         int age = this.getAge(state);
+        int skyLight = MathHelper.clamp(world.getLightLevel(LightType.SKY, pos) - world.getAmbientDarkness(), 0, 15);
 
-        if (MathHelper.clamp(world.getLightLevel(LightType.SKY, pos) - world.getAmbientDarkness(), 0, 15) >= 9) {
+        if (skyLight >= 9) {
             // Growth code
             if (!this.isMature(state)) {
-                if (random.nextInt(10) == 0) {
+                if (random.nextInt(10 + 4 * (15 - skyLight)) == 0) {
                     world.setBlockState(pos, this.withAge(age + 1), 2);
                 }
-            } else if (random.nextInt((int) GRASS_SPREAD_CHANCE) == 0 && !isFern) {
+            } else if (random.nextInt((int) GRASS_SPREAD_CHANCE + 8 * (15 - skyLight)) == 0 && !isFern) {
                 // Chance to propagate grass down
                 if (world.getBlockState(pos.down()).isOf(Blocks.DIRT)) {
                     world.setBlockState(pos.down(), Blocks.GRASS_BLOCK.getDefaultState());
@@ -70,7 +70,8 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
             }
 
             // Spread code
-            if (random.nextInt(isFern ? (int) FERN_SPREAD_CHANCE : (int) (GRASS_SPREAD_CHANCE / (float) age)) == 0) {
+            int spreadChance = (int) (isFern ? FERN_SPREAD_CHANCE : (GRASS_SPREAD_CHANCE / (float) (age + 1)));
+            if (random.nextInt(spreadChance + 4 * (15 - skyLight)) == 0) {
                 // Don't spread if there's already >=5 grass in the 3x3 area
                 int i = 5;
                 for (BlockPos blockPos : BlockPos.iterate(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
@@ -84,7 +85,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
 
                 // Otherwise, spread to nearby blocks
                 for (int j = 0; j < 3; ++j) {
-                    BlockPos blockPos2 = pos.add(random.nextInt(5) - 2, random.nextInt(2) - random.nextInt(2), random.nextInt(5) - 2);
+                    BlockPos blockPos2 = pos.add(random.nextInt(3) - 1, random.nextInt(2) - random.nextInt(2), random.nextInt(3) - 1);
                     if (world.isAir(blockPos2) && state.canPlaceAt(world, blockPos2)) {
                         world.setBlockState(blockPos2, isFern ? Blocks.FERN.getDefaultState().with(AGE, 0) : Blocks.GRASS.getDefaultState().with(AGE, 0));
                     }
@@ -98,7 +99,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     }
 
     public int getMaxAge() {
-        return MAX_AGE;
+        return Properties.AGE_7_MAX;
     }
 
     protected int getAge(BlockState state) {

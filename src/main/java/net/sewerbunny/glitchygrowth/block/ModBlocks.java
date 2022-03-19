@@ -9,6 +9,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.sewerbunny.glitchygrowth.GlitchyGrowth;
+import net.sewerbunny.glitchygrowth.block.custom.DeadGrassBlock;
 import net.sewerbunny.glitchygrowth.block.custom.DeadPlantBlock;
 import net.sewerbunny.glitchygrowth.item.ModItemGroup;
 
@@ -19,7 +20,7 @@ public class ModBlocks {
             ModItemGroup.GLITCHY_GROWTH);
 
     public static final Block DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
-            new Block(FabricBlockSettings.of(Material.SOIL, MapColor.OAK_TAN)
+            new DeadGrassBlock(FabricBlockSettings.of(Material.SOIL, MapColor.OAK_TAN)
                     .ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRAVEL)),
             ModItemGroup.GLITCHY_GROWTH);
 

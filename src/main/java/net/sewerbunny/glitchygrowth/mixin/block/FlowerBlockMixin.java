@@ -1,10 +1,12 @@
 package net.sewerbunny.glitchygrowth.mixin.block;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.LightType;
 import net.sewerbunny.glitchygrowth.util.ModTags;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -22,7 +24,7 @@ public class FlowerBlockMixin extends PlantBlock {
     @Override
     @SuppressWarnings("deprecation")
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (world.getLightLevel(pos) >= 11) {
+        if (world.getLightLevel(LightType.SKY, pos) - world.getAmbientDarkness() >= 11) {
             if (random.nextInt(FLOWER_SPREAD_CHANCE) == 0) {
                 // Don't spread if there's already >=5 of same flower in the 5x5 area
                 int i = 5;
@@ -38,7 +40,7 @@ public class FlowerBlockMixin extends PlantBlock {
                 // Otherwise, spread to nearby blocks
                 for (int j = 0; j < 2; ++j) {
                     BlockPos blockPos2 = pos.add(random.nextInt(5) - 2, random.nextInt(2) - random.nextInt(2), random.nextInt(5) - 2);
-                    if (state.canPlaceAt(world, blockPos2) && (world.isAir(blockPos2) || world.getBlockState(blockPos2).isIn(ModTags.Blocks.GRASS))) {
+                    if (state.canPlaceAt(world, blockPos2) && world.getBlockState(blockPos2.down()).isOf(Blocks.GRASS) && (world.isAir(blockPos2) || world.getBlockState(blockPos2).isIn(ModTags.Blocks.GRASS))) {
                         world.setBlockState(blockPos2, this.getDefaultState());
                     }
                 }

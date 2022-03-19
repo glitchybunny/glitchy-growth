@@ -10,7 +10,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 
 public class DeadPlantBlock extends PlantBlock {
-    private static final int MAX_AGE = 7;
     private static final IntProperty AGE = Properties.AGE_7;
     private static final VoxelShape[] AGE_TO_SHAPE = new VoxelShape[]{
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 5.0D, 14.0D),
@@ -28,27 +27,11 @@ public class DeadPlantBlock extends PlantBlock {
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(AGE);
+        builder.add(this.getAgeProperty());
     }
 
     public IntProperty getAgeProperty() {
         return AGE;
-    }
-
-    public int getMaxAge() {
-        return MAX_AGE;
-    }
-
-    protected int getAge(BlockState state) {
-        return state.get(this.getAgeProperty());
-    }
-
-    public BlockState withAge(int age) {
-        return this.getDefaultState().with(this.getAgeProperty(), age);
-    }
-
-    public boolean isMature(BlockState state) {
-        return state.get(this.getAgeProperty()) >= this.getMaxAge();
     }
 
     @Override
