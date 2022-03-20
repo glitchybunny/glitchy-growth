@@ -1,7 +1,21 @@
 {
   "variants": {
-    "": {
-      "model": "glitchygrowth:block/dead_grass_block"
-    }
+    "": [
+      {
+        "model": "glitchygrowth:block/dead_grass_block"
+      },
+      {
+        "model": "glitchygrowth:block/dead_grass_block",
+        "y": 90
+      },
+      {
+        "model": "glitchygrowth:block/dead_grass_block",
+        "y": 180
+      },
+      {
+        "model": "glitchygrowth:block/dead_grass_block",
+        "y": 270
+      }
+    ]
   }
 }
