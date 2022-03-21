@@ -94,7 +94,7 @@ public class GrassBlockMixin extends SpreadableBlock implements Fertilizable {
 
     public void growGrass(ServerWorld world, BlockPos pos) {
         if (world.getBlockState(pos.up()).isOf(Blocks.AIR)) {
-            world.setBlockState(pos.up(), Blocks.GRASS.getDefaultState().with(Properties.AGE_7, 0));
+            world.setBlockState(pos.up(), Blocks.GRASS.getDefaultState().with(Properties.AGE_3, 0));
         }
     }
 

@@ -19,7 +19,7 @@ public class ModBlocks {
 
     public static final Block DEAD_GRASS = registerBlock("dead_grass",
             new DeadPlantBlock(FabricBlockSettings.of(Material.REPLACEABLE_PLANT, MapColor.OAK_TAN)
-                    .noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS), 7),
+                    .noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS), 3),
             ModItemGroup.GLITCHY_GROWTH);
 
     public static final Block DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",

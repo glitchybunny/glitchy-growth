@@ -25,15 +25,11 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     // Todo: Make spread chance configurable with ModMenu
     private static final float GRASS_SPREAD_CHANCE = 110.0f;
     private static final float FERN_SPREAD_CHANCE = 50.0f;
-    private static final IntProperty AGE = Properties.AGE_7;
+    private static final IntProperty AGE = Properties.AGE_3;
     private static final VoxelShape[] AGE_TO_SHAPE = new VoxelShape[]{
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 5.0D, 14.0D),
-            Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 5.0D, 14.0D),
-            Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 8.0D, 14.0D),
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 8.0D, 14.0D),
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 11.0D, 14.0D),
-            Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 11.0D, 14.0D),
-            Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 14.0D, 14.0D),
             Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 14.0D, 14.0D)};
 
     public FernBlockMixin(Settings settings) {
@@ -42,7 +38,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void Init(CallbackInfo ci) {
-        setDefaultState(getStateManager().getDefaultState().with(AGE, Properties.AGE_7_MAX));
+        setDefaultState(getStateManager().getDefaultState().with(AGE, this.getMaxAge()));
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -59,7 +55,8 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
         if (skyLight >= 9) {
             // Growth code
             if (!this.isMature(state)) {
-                if (random.nextInt(10 + 4 * (15 - skyLight)) == 0) {
+                // Change to age up
+                if (random.nextInt(20 + 8 * (15 - skyLight)) == 0) {
                     world.setBlockState(pos, this.withAge(age + 1), 2);
                 }
             } else if (random.nextInt((int) GRASS_SPREAD_CHANCE + 8 * (15 - skyLight)) == 0 && !isFern) {
@@ -99,7 +96,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     }
 
     public int getMaxAge() {
-        return Properties.AGE_7_MAX;
+        return Properties.AGE_3_MAX;
     }
 
     protected int getAge(BlockState state) {
@@ -119,7 +116,7 @@ public class FernBlockMixin extends PlantBlock implements Fertilizable {
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Vec3d vec3d = state.getModelOffset(world, pos);
         if (state.isOf(Blocks.FERN)) {
-            return AGE_TO_SHAPE[7].offset(vec3d.x, vec3d.y, vec3d.z);
+            return AGE_TO_SHAPE[getMaxAge()].offset(vec3d.x, vec3d.y, vec3d.z);
         }
         return AGE_TO_SHAPE[state.get(this.getAgeProperty())].offset(vec3d.x, vec3d.y, vec3d.z);
     }
