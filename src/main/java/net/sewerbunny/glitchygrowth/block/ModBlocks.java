@@ -13,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 import net.sewerbunny.glitchygrowth.GlitchyGrowth;
 import net.sewerbunny.glitchygrowth.block.custom.DeadGrassBlock;
 import net.sewerbunny.glitchygrowth.block.custom.DeadPlantBlock;
+import net.sewerbunny.glitchygrowth.block.custom.HollowPillarBlock;
 import net.sewerbunny.glitchygrowth.item.ModItemGroup;
 
 public class ModBlocks {
@@ -28,7 +29,7 @@ public class ModBlocks {
             ModItemGroup.GLITCHY_GROWTH);
 
     public static final Block HOLLOW_OAK_LOG = registerBlock("hollow_oak_log",
-            new PillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.OAK_TAN : MapColor.SPRUCE_BROWN)
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.OAK_TAN : MapColor.SPRUCE_BROWN)
                     .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
             ModItemGroup.GLITCHY_GROWTH);
 
