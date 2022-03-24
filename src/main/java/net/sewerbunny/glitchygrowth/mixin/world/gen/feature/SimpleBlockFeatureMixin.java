@@ -33,7 +33,7 @@ public class SimpleBlockFeatureMixin extends Feature<SimpleBlockFeatureConfig> {
                 TallPlantBlock.placeAt(structureWorldAccess, blockState, blockPos, 2);
             } else if (blockState.getBlock() instanceof FernBlock) {
                 // Ensure grass spawns with random age
-                structureWorldAccess.setBlockState(blockPos, blockState.with(Properties.AGE_7, context.getRandom().nextInt(8)), 2);
+                structureWorldAccess.setBlockState(blockPos, blockState.with(Properties.AGE_3, context.getRandom().nextInt(4)), 2);
             } else {
                 structureWorldAccess.setBlockState(blockPos, blockState, 2);
             }
