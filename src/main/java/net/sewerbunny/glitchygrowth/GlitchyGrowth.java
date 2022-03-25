@@ -12,8 +12,9 @@ public class GlitchyGrowth implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
 		ModBlocks.registerFlammableBlocks();
+		ModItems.registerModItems();
+		ModItems.registerCompostingItems();
 	}
 }
