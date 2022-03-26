@@ -7,7 +7,7 @@ This mod is very early in alpha development, and I'm learning as I go :)
 - New blocks, such as hollow logs and dead grass!
 - Grass spreads and grows over time, make sure you look after your lawn.
 - Healthy grass has a very small chance of growing flowers, which spread like mushrooms.
-- Hollow logs can be waterlogged (no pun intended)
+- Hollow logs are great for decoration, can be crawled through, and even waterlogged (no pun intended). They're great for dropshafts.
 
 
 ### Planned features:
