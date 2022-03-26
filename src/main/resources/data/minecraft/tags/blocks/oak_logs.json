@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:grass",
-    "#c:hollow_logs"
+    "glitchygrowth:hollow_oak_log"
   ]
 }

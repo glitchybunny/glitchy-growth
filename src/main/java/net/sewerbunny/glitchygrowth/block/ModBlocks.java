@@ -22,7 +22,6 @@ public class ModBlocks {
             new DeadPlantBlock(FabricBlockSettings.of(Material.REPLACEABLE_PLANT, MapColor.OAK_TAN)
                     .noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS), 3),
             ModItemGroup.GLITCHY_GROWTH);
-
     public static final Block DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             new DeadGrassBlock(FabricBlockSettings.of(Material.SOIL, MapColor.OAK_TAN)
                     .ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRAVEL)),
@@ -31,6 +30,39 @@ public class ModBlocks {
     public static final Block HOLLOW_OAK_LOG = registerBlock("hollow_oak_log",
             new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.OAK_TAN : MapColor.SPRUCE_BROWN)
                     .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_SPRUCE_LOG = registerBlock("hollow_spruce_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.SPRUCE_BROWN : MapColor.BROWN)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_BIRCH_LOG = registerBlock("hollow_birch_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.PALE_YELLOW : MapColor.OFF_WHITE)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_JUNGLE_LOG = registerBlock("hollow_jungle_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.DIRT_BROWN : MapColor.SPRUCE_BROWN)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_ACACIA_LOG = registerBlock("hollow_acacia_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.ORANGE : MapColor.STONE_GRAY)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_DARK_OAK_LOG = registerBlock("hollow_dark_oak_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> MapColor.BROWN)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_MANGROVE_LOG = registerBlock("hollow_mangrove_log",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.WOOD, (state) -> state.get(PillarBlock.AXIS) == Direction.Axis.Y ? MapColor.DULL_RED : MapColor.SPRUCE_BROWN)
+                    .strength(2.0F).sounds(BlockSoundGroup.WOOD)),
+            ModItemGroup.GLITCHY_GROWTH);
+
+    public static final Block HOLLOW_CRIMSON_STEM = registerBlock("hollow_crimson_stem",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.NETHER_WOOD, (state) -> MapColor.DULL_PINK)
+                    .strength(2.0F).sounds(BlockSoundGroup.NETHER_STEM)),
+            ModItemGroup.GLITCHY_GROWTH);
+    public static final Block HOLLOW_WARPED_STEM = registerBlock("hollow_warped_stem",
+            new HollowPillarBlock(FabricBlockSettings.of(Material.NETHER_WOOD, (state) -> MapColor.DARK_AQUA)
+                    .strength(2.0F).sounds(BlockSoundGroup.NETHER_STEM)),
             ModItemGroup.GLITCHY_GROWTH);
 
     @SuppressWarnings("SameParameterValue")
@@ -58,5 +90,11 @@ public class ModBlocks {
     public static void registerFlammableBlocks() {
         registerBlockFlammability(DEAD_GRASS, 60, 100);
         registerBlockFlammability(HOLLOW_OAK_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_SPRUCE_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_BIRCH_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_JUNGLE_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_ACACIA_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_DARK_OAK_LOG, 5, 5);
+        registerBlockFlammability(HOLLOW_MANGROVE_LOG, 5, 5);
     }
 }

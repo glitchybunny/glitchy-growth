@@ -1,0 +1,8 @@
+{
+	"parent": "glitchygrowth:block/hollow_log",
+	"textures": {
+		"end": "minecraft:block/acacia_log_top",
+		"outside": "minecraft:block/acacia_log",
+		"inside": "minecraft:block/stripped_acacia_log"
+	}
+}

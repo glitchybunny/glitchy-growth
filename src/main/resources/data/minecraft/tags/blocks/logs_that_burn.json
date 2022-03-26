@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "glitchygrowth:hollow_oak_log",
+    "glitchygrowth:hollow_spruce_log",
+    "glitchygrowth:hollow_birch_log",
+    "glitchygrowth:hollow_jungle_log",
+    "glitchygrowth:hollow_acacia_log",
+    "glitchygrowth:hollow_dark_oak_log",
+    "glitchygrowth:hollow_mangrove_log"
+  ]
+}

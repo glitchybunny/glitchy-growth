@@ -2,5 +2,13 @@
   "itemGroup.glitchygrowth.glitchygrowth": "Glitchy Growth",
   "block.glitchygrowth.dead_grass": "Dead Grass",
   "block.glitchygrowth.dead_grass_block": "Dead Grass Block",
-  "block.glitchygrowth.hollow_oak_log": "Hollow Oak Log"
+  "block.glitchygrowth.hollow_oak_log": "Hollow Oak Log",
+  "block.glitchygrowth.hollow_spruce_log": "Hollow Spruce Log",
+  "block.glitchygrowth.hollow_birch_log": "Hollow Birch Log",
+  "block.glitchygrowth.hollow_jungle_log": "Hollow Jungle Log",
+  "block.glitchygrowth.hollow_acacia_log": "Hollow Acacia Log",
+  "block.glitchygrowth.hollow_dark_oak_log": "Hollow Dark Oak Log",
+  "block.glitchygrowth.hollow_mangrove_log": "Hollow Mangrove Log",
+  "block.glitchygrowth.hollow_crimson_stem": "Hollow Crimson Stem",
+  "block.glitchygrowth.hollow_warped_stem": "Hollow Warped Stem"
 }

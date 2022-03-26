@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#c:hollow_oak_logs",
+    "#c:hollow_spruce_logs",
+    "#c:hollow_birch_logs",
+    "#c:hollow_jungle_logs",
+    "#c:hollow_acacia_logs",
+    "#c:hollow_dark_oak_logs",
+    "#c:hollow_mangrove_logs",
+    "#c:hollow_crimson_stems",
+    "#c:hollow_warped_stems"
+  ]
+}
